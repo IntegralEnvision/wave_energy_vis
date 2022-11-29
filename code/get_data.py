@@ -30,7 +30,7 @@ grid = 'multi_reanal.glo_30m_ext'
 
 param_dict = {}
 paramnamedict = {'hs':'swh','tp':'perpw','dp':'dirpw'}
-outfname = grid + '.{}.hs.tp.dp.pickle'.format(date.strftime('%Y%m'))
+outfname = grid + '.{}.hs.tp.dp.parquet'.format(date.strftime('%Y%m'))
 gribnames = []
 
 for paramname in ['hs','tp','dp']:
@@ -72,7 +72,7 @@ global_t = np.tile(np.array(time_vec),int(hs.size/len(time_vec)))
 #save into a pandas dataframe
 df_out = pd.DataFrame({'hs':hs, 'tp':tp, 'dp':dp, 'time':global_t, 'lat':lat, 'lon':lon})
 
-df_out.to_pickle(outroot + outfname)
+df_out.to_parquet(outroot + outfname)
 
 #clean up
 allfiles = os.listdir(outroot)
