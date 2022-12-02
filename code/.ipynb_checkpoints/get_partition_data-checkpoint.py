@@ -69,9 +69,9 @@ def load_ncfile_params(local_netcdf):
     partitions = [int(xx) for xx in dset['partition'].values]
     
     #reshape lat and lon 
-    lat_tiled = np.tile(lat,int(hs.size/lat.shape[0]))
-    lon_tiled = np.tile(lon,int(hs.size/lon.shape[0]))
-    time_tiled = np.tile(np.array(time_vec),int(hs.size/len(time_vec)))
+    self.lat_tiled = np.tile(lat,int(hs.size/lat.shape[0]))
+    self.lon_tiled = np.tile(lon,int(hs.size/lon.shape[0]))
+    self.time_tiled = np.tile(np.array(time_vec),int(hs.size/len(time_vec)))
     
     return lat_tiled, lon_tiled, time_tiled, partitions, dset
 

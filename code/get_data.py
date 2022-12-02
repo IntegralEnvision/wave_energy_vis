@@ -80,7 +80,4 @@ allfiles = [aa for aa in allfiles if 'pickle' not in aa]
 for file in allfiles:
     os.remove(outroot + file)
 
-t1 = time.time()
-total_time = t1-t0
-print('Total time took {0:.2f} s'.format(total_time))
-
+    
