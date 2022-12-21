@@ -23,11 +23,10 @@ grid = 'multi_reanal.glo_30m_ext'
 #====================================
 
 param_dict = {}
-paramnamedict = {'hs':'swh','tp':'perpw','dp':'dirpw'}
-outfname = grid + '.{}.hs.tp.dp.parquet'.format(date.strftime('%Y%m'))
+params = ['hs', 'dp', 'tp']
 gribnames = []
 
-for paramname in ['hs','tp','dp']:
+for paramname in params:
     fname = grid + '.{}.{}.grb2'.format(paramname,date.strftime('%Y%m'))
     gribnames.append(outroot + fname)
     #Download a file

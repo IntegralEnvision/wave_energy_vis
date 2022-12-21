@@ -11,7 +11,7 @@
 
 
 import numpy as np
-import math 
+import math 
 
 
 #%% Compute Wave Energy Period for each partition
