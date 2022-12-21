@@ -11,6 +11,7 @@ import datetime as dt
 import numpy as np
 import pandas as pd
 from utils import IECParams 
+import matplotlib.pyplot as pl
 #
 #Questions - do we need to check that all the model runs have the same discretizations?
 
@@ -87,13 +88,34 @@ def load_bathy(gridname):
     bathy_dir = '../data/'
     bathyset = xr.open_dataset(bathy_dir + gridname + '.nc')
     bathy = bathyset['depth'].values
+    bathy[bathy==0] = np.nan
+    bathy = -1*bathy
+    #flip bathymetry to be the same as the parameters
+    bathy = np.flipud(bathy)
     
     return bathy
+
+def reshape_to_lat_lon(param, lat, lon, time):
+    param = np.reshape(param, (time, lat ,lon))
+    return param
     
 time, lat, lon, hs, tp, dp = load_all_params(2009, 12)
-depth = load_bathy('glo_30m')
-iec = IECParams(hs, tp, dp, depth, time)
-J = iec.total_power()
+hs = hs[0,:,:]
+tp = tp[0,:,:]
+dp = dp[0,:,:]
 
+depth = load_bathy('glo_30m')
+#given as 1D arrays
+iec = IECParams(time)
+k, Cn, J = iec.total_power(depth.ravel(), hs.ravel(), tp.ravel()) #returned as a 1D array
+
+# fig, ax = pl.subplots(3,1)
+# ax[0].plot(lon, J)
+# ax[0].set_title('Total Power')
+# ax[1].plot(lon, iec.Cn)
+# ax[1].set_title('Group Velocity')
+# ax[2].plot(lon, iec.k)
+# ax[2].set_title('Wave number')
+# fig.suptitle('Values for Latitude {}'.format(lat[100]))
     
     

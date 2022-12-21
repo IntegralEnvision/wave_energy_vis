@@ -7,17 +7,12 @@ import time
 
 class IECParams:
     
-    def __init__(self, hs, tp, dp, depth, time_vec):
+    def __init__(self, time_vec):
 
-        self.hs = hs
-        self.tp = tp
-        self.dp = dp
-        self.depth = depth
         self.time = time_vec
-        
         self.total_hours = (self.time[-1] - self.time[0]).total_seconds()/3600
 
-    def energy_period(self,wind_sea_cutoff = 6):
+    def energy_period(self, tp, wind_sea_cutoff = 6):
         '''
         Calculate energy period following Ahn et al, 2022
         
@@ -36,36 +31,37 @@ class IECParams:
         '''
         C_wind = 0.86
         C_swell = 1
-        self.te = C_swell * self.tp
-        windsea_mask = self.te<wind_sea_cutoff
-        self.te[windsea_mask] = C_wind * self.te[windsea_mask] 
+        te = C_swell * tp
+        windsea_mask = te<wind_sea_cutoff
+        te[windsea_mask] = C_wind * te[windsea_mask] 
+        
+        return te
 
 
-    def total_power(self, rho = 1025, g = 9.80665):
+    def total_power(self, depth, hs, tp, rho = 1025, g = 9.80665):
         '''
         Calculates the total power following Eq.1 in Ahn et al, 2022
         Uses MHKit for group velocity and energy period
         
-        Attributes:
+        Returns:
         ----------------------------
-        J:float: time x lat x lon: wave power (units)
+        J:float: 1 x (time x lat x lon): wave power (units)
+        k:float: 1 x (time x lat x lon): wave number (units)
         
-    
+        >>> 32054.2 = total_power(5287.886, 2.37, 11.64)
+        >>> 124245.41.2 = total_power(5572.521, 4.4, 13.09)
         
         '''
         
-        self.energy_period()
-        k = wave_number(self.energy_period, self.depth)
-        Cn = wave_celerity(k, self.depth, g=9.80665, depth_check=True, ratio=2)#check this ratio
-        J = (rho * g)/16 * self.Hs**2 * Cn
+        te = self.energy_period(tp)
         
-        return J
+        frequency_e = 1/te
+
+        k = wave_number(frequency_e, depth)
+
+        Cn = wave_celerity(frequency_e, k, depth, g=9.80665, depth_check=True, ratio=2)#check this ratio
+
+        J = (rho * g)/16 * hs**2 * Cn
         
-        
-        
-        
-        
-    
-        
-    
-    
+        return k, Cn, J
+           
