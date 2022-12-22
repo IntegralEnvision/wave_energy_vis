@@ -10,7 +10,7 @@ import xarray as xr
 import datetime as dt 
 import numpy as np
 import pandas as pd
-from utils import IECParams 
+from iecparams import IECParams 
 import matplotlib.pyplot as pl
 #
 #Questions - do we need to check that all the model runs have the same discretizations?
